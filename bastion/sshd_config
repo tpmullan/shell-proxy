@@ -1,0 +1,22 @@
+Port 2222
+HostKey /config/ssh_host_keys/ssh_host_rsa_key
+HostKey /config/ssh_host_keys/ssh_host_ecdsa_key
+HostKey /config/ssh_host_keys/ssh_host_ed25519_key
+AuthorizedKeysFile /config/.ssh/authorized_keys
+PasswordAuthentication no
+PermitRootLogin no
+PubkeyAuthentication yes
+AllowTcpForwarding yes
+GatewayPorts no
+X11Forwarding no
+PrintMotd no
+UseDNS no
+StrictModes no
+SetEnv MOSH_SERVER_NETWORK_TMOUT=604800
+
+# Closes genuinely dead connections within ~45s without affecting
+# idle-but-alive sessions. This also drives shell-proxy-ctl's tunnel
+# presence tracking: a restricted tunnel key's session ending is what
+# tells the daemon a host went down.
+ClientAliveInterval 15
+ClientAliveCountMax 3
