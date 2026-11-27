@@ -22,6 +22,15 @@ BLOCK_RE = re.compile(
 )
 
 
+# The same pair the other way round (`sha256` first, then `url`), as `brew style`
+# orders a cask: version, sha256, url.
+SHA_FIRST_RE = re.compile(
+    r'(sha256\s+")[0-9a-f]{64}("[ \t]*\n(?:[ \t]*\n)*[ \t]*'
+    r'url\s+"https://github\.com/tpmullan/shell-proxy/releases/download/)v[^"/]+'
+    r'/([^"/]+)(")'
+)
+
+
 class UpdateError(Exception):
     pass
 
@@ -48,7 +57,19 @@ def update(text, new_version, sums):
             raise UpdateError(f"{asset} is not listed in SHA256SUMS")
         return f"{m.group(1)}v{new_version}/{asset}{m.group(3)}{sha}{m.group(4)}"
 
+    def block_sha_first(m):
+        asset = m.group(3).replace(old_version, new_version)
+        sha = sums.get(asset)
+        if sha is None:
+            raise UpdateError(f"{asset} is not listed in SHA256SUMS")
+        return f"{m.group(1)}{sha}{m.group(2)}v{new_version}/{asset}{m.group(4)}"
+
     updated, count = BLOCK_RE.subn(block, text)
+    if count == 0:
+        # Only a file that has no url-then-sha256 pair is read the other way:
+        # with several blocks the first way would pair one block's checksum
+        # with the next block's url.
+        updated, count = SHA_FIRST_RE.subn(block_sha_first, text)
     if count == 0:
         raise UpdateError("no release url/sha256 pairs")
     return VERSION_RE.sub(lambda m: f"{m.group(1)}{new_version}{m.group(3)}", updated, count=1)
