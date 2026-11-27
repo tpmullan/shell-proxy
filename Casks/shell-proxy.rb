@@ -1,8 +1,8 @@
 cask "shell-proxy" do
-  version "0.14.0"
-  sha256 "832e54bdd82d45bef90aa822c1d912fc130350df1b8503a01530ef533b07c5bf"
+  version "0.14.1"
+  sha256 "f9fde5238577db04fa36abc541af264e3f9d326c748f7ee8e5f68c1de9c19fe3"
 
-  url "https://github.com/tpmullan/shell-proxy/releases/download/v0.14.0/Shell-Proxy-0.14.0-macos-arm64.tar.gz"
+  url "https://github.com/tpmullan/shell-proxy/releases/download/v0.14.1/Shell-Proxy-0.14.1-macos-arm64.tar.gz"
   name "Shell Proxy"
   desc "SSH and Mosh terminal app"
   homepage "https://github.com/tpmullan/shell-proxy"
